@@ -1,4 +1,4 @@
-# WISER-Moderna Challenge for WISER Summer Program 2026
+# Moderna Challenge for WISER Summer Program 2026
 author
 
 ### 1. Introduction and problem statement
@@ -30,21 +30,31 @@ This project is not expected to purpose a better or universal replacement for cl
 ### 2. Data, simulations and hardware
 
 The project relies on synthetic segments of RNA sequences, produced by concatenating real sequences from the BEACON dataset (Ren, Yuchen, et al., 2024) noncoding-RNA task and dividing them into target lengths. This approach preserves some balance between biological reality and the need for short, fixed-lenght sequences for testing and scaling comparisons.
+
 *placeholder: lenghts and numbers for simulated and hardware runs*
 
 *placeholder: simulator and hardware runs: hardware specifications, real time used, counts, QPU time*
+
 *placeholder: graphs for qubit per lenght, variables per lenght, compute time per lenght*
 
 ### 3. Results
+
 *placeholder: brief summary description, key findings*
+
 *placeholder: detailed results + graphs links*
+
 *placeholder: link to analyzis notebook*
+
 *placeholder: link to presentation/video*
 
 ### 4. Project workflow
+
 *placeholder: general overview*
+
 *placeholder: link to execution notebook*
+
 *placeholder: image of workflow chart*
+
 *placeholder: short modules description*
 
 
