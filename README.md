@@ -1,5 +1,5 @@
 # Moderna Challenge for WISER Summer Program 2026
-author
+author: Sergey Grigorovich
 
 ### 1. Introduction and problem statement
 
@@ -9,11 +9,11 @@ Classical tools such as ViennaRNA predict low-energy RNA structures using thermo
 
 #### IBM-Moderna studies of mRNA folding (selected)
 Recent IBM–Moderna research provides a clear progression toward larger and more hybrid quantum workflows.
-- Alevras et al. (2024) represented RNA folding as a binary optimization problem and executed a variational algorithm on IBM quantum processors. It is a clear demonstation that larger RNA optimization models could be studied on current hardware rather than only through small simulations.
+- *Alevras et al. (2024)* represented RNA folding as a binary optimization problem and executed a variational algorithm on IBM quantum processors. It is a clear demonstation that larger RNA optimization models could be studied on current hardware rather than only through small simulations.
 
-- Kumar, Alevras, Metkar et al. (2025) extended this direction through a broader hybrid workflow. The approach combined quantum execution with classical transformations, and local optimization to address larger RNA sequences.
+- *Kumar, Alevras, Metkar et al. (2025)* extended this direction through a broader hybrid workflow. The approach combined quantum execution with classical transformations, and local optimization to address larger RNA sequences.
 
-- Friedhoff, Metkar, Davis, Kumar, and Galda (2026, *Pauli Correlation Encoding for mRNA Secondary Structure Prediction: Problem-Aware Decoding for Dense-Constraint QUBOs*) focused on two remaining barriers: the number of qubits required and the difficulty of decoding dense, highly constrained optimization problems. Their compressed encoding and problem-aware decoder moved responsibility into a classical postprocessing stage, showing that the representation of constraints is as important as the algorithm itself.
+- *Friedhoff, Metkar, Davis, Kumar, and Galda (2026)* focused on two remaining barriers: the number of qubits required and the difficulty of decoding dense, highly constrained optimization problems. Their compressed encoding and problem-aware decoder moved responsibility into a classical postprocessing stage, showing that the representation of constraints is as important as the algorithm itself.
 
 #### The present project 
 The present project continues the direction of these studies by asking a question about the role of structural constraints. **Encoding every constraint** directly in the quantum objective may produce more valid structures, but it adds multiple interactions and can make circuits **more demanding** by increasing depth. Leaving some constraints outside can simplify the circuit, but then invalid selections must be corrected classically.
@@ -29,7 +29,7 @@ This project is not expected to purpose a better or universal replacement for cl
 
 ### 2. Data, simulations and hardware
 
-The project relies on synthetic segments of RNA sequences, produced by concatenating real sequences from the BEACON dataset (Ren, Yuchen, et al., 2024) noncoding-RNA task and dividing them into target lengths. This approach preserves some balance between biological reality and the need for short, fixed-lenght sequences for testing and scaling comparisons.
+The project relies on synthetic segments of RNA sequences, produced by concatenating real sequences from the BEACON dataset (*Ren, Yuchen, et al., 2024*) noncoding-RNA task and dividing them into target lengths. This approach preserves some balance between biological reality and the need for short, fixed-lenght sequences for testing and scaling comparisons.
 
 *placeholder: lenghts and numbers for simulated and hardware runs*
 
