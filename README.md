@@ -1,7 +1,7 @@
 # WISER-Moderna Challenge for WISER Summer Program 2026
 author
 
-## 1. Introduction
+### 1. Introduction and problem statement
 
 mRNA can fold on itself when complementary nucleotides form base pairs, with the resulting secondary structure influencing stability, translation, and manufacturing. Predicting these structures is relevant to mRNA study and design.
 
@@ -27,22 +27,28 @@ All three versions use the same RNA sequences, candidate stems, stem rewards, qu
 
 This project is not expected to purpose a better or universal replacement for classical RNA-folding software. It explores *whether stricter quantum constraint encoding provides enough practical benefit to justify its additional circuit cost, or whether a simpler hybrid strategy offers a better balance for current quantum hardware*.
 
-## 2. Results
-[placeholder: brief summary description, key findings]
-[detailed results + graphs links]
+### 2. Data, simulations and hardware
 
-## 3. Data, simulations and hardware
+The project relies on synthetic segments of RNA sequences, produced by concatenating real sequences from the BEACON dataset (Ren, Yuchen, et al., 2024) noncoding-RNA task and dividing them into target lengths. This approach preserves some balance between biological reality and the need for short, fixed-lenght sequences for testing and scaling comparisons.
+*placeholder: lenghts and numbers for simulated and hardware runs*
 
-The project relies on synthetic segments of RNA sequences, produced by concatenating real sequences from the BEACON dataset (Ren, Yuchen, et al., 2024) noncoding-RNA task and dividing them into target lengths. This approach preserves some balance between biological reality and the need for short sequences for testing and scaling comparisons.
-[placeholder: lenghts and numbers for simulated and hardware runs]
+*placeholder: simulator and hardware runs: hardware specifications, real time used, counts, QPU time*
+*placeholder: graphs for qubit per lenght, variables per lenght, compute time per lenght*
 
-[placeholder: simulator and hardware runs: specifications, real time used, counts, QPU time]
+### 3. Results
+*placeholder: brief summary description, key findings*
+*placeholder: detailed results + graphs links*
+*placeholder: link to analyzis notebook*
+*placeholder: link to presentation/video*
 
-## 4. Project workflow
-[placeholder]
+### 4. Project workflow
+*placeholder: general overview*
+*placeholder: link to execution notebook*
+*placeholder: image of workflow chart*
+*placeholder: short modules description*
 
 
-## References
+### 5. References
 1. Alevras, Dimitris, et al. "mRNA secondary structure prediction using utility-scale quantum computers." 2024 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2024.
 2. Kumar, Vaibhaw, et al. "Towards secondary structure prediction of longer mrna sequences using a quantum-centric optimization scheme." 2025 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2025.
 3. Friedhoff, Triet, et al. "Pauli Correlation Encoding for mRNA Secondary Structure Prediction: Problem-Aware Decoding for Dense-Constraint QUBOs." arXiv preprint arXiv:2605.20163 (2026).
