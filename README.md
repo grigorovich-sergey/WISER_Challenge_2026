@@ -16,7 +16,7 @@ Recent IBM–Moderna research provides a clear progression toward larger and mor
 - *Friedhoff, Metkar, Davis, Kumar, and Galda (2026)* focused on two remaining barriers: the number of qubits required and the difficulty of decoding dense, highly constrained optimization problems. Their compressed encoding and problem-aware decoder moved responsibility into a classical postprocessing stage, showing that the representation of constraints is as important as the algorithm itself.
 
 #### The present project 
-The present project continues the direction of these studies by asking a question about the role of structural constraints. **Encoding every constraint** directly in the quantum objective may produce more valid structures, but it adds multiple interactions and can make circuits **more demanding** by increasing depth. Leaving some constraints outside can simplify the circuit, but then invalid selections must be corrected classically.
+The present project continues the direction of these studies by asking a question about the role of structural constraints. Encoding **every** constraint directly in the quantum objective may produce more valid structures, but it adds multiple interactions and can make circuits **more demanding** by increasing depth. Leaving some constraints outside can simplify the circuit, but then invalid selections must be corrected classically, wuth rapidly growing computational cost.
 
 The project asks a question about the **trade-off** through three versions of the RNA stem-selection problem:
 - the **strict** variant places both nucleotide-overlap and crossing-stem constraints inside the QUBO;
@@ -39,7 +39,14 @@ The project relies on synthetic segments of RNA sequences, produced by concatena
 
 ### 3. Results
 
-*placeholder: brief summary description, key findings*
+The experiments show a clear trade-off between quantum constraint encoding and classical repair.
+Compared with *strict* encoding, the *relaxed* variant **reduced the mean number of quadratic interactions by 37%** on average, across various sequence lenghts, and **reduced mean circuit depth by 21.3%**. The paired comparison showed lower *relaxed*-circuit depth at every tested nontrivial sequence length.
+
+This reduction **did not worsen** repaired candidate **quality** substantially. The mean ViennaRNA energy gap was **0.443 kcal/mol** for *relaxed* and **0.475 kcal/mol** for *strict*. Mean base-pair F1 was **0.801 and 0.811**, respectively. *Strict* encoding improved raw validity on shorter instances, but this advantage disappeared as problem size increased, especially, from length 35 onward.
+
+The *postprocessed* variant **minimized circuit cost**, with depth remaining near 6, but lead to **much more work for classical repair**. It required **48.91** stem removals on average, compared with **22.50** for *relaxed*, a 117% increase. Mean energy gap vs *relaxed* was also about **3.5 times larger**, **1.546** versus **0.443** kcal/mol, while mean F1 fell from **0.801** to **0.571**.
+
+Overall, the *relaxed* variant provided **the best balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** relative to *strict* encoding while **preserving similar repaired quality**.
 
 *placeholder: detailed results + graphs links*
 
@@ -57,8 +64,11 @@ The project relies on synthetic segments of RNA sequences, produced by concatena
 
 *placeholder: short modules description*
 
+### 5. Limitations
 
-### 5. References
+*placeholder: bulletpoints limitations*
+
+### 6. References
 1. Alevras, Dimitris, et al. "mRNA secondary structure prediction using utility-scale quantum computers." 2024 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2024.
 2. Kumar, Vaibhaw, et al. "Towards secondary structure prediction of longer mrna sequences using a quantum-centric optimization scheme." 2025 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2025.
 3. Friedhoff, Triet, et al. "Pauli Correlation Encoding for mRNA Secondary Structure Prediction: Problem-Aware Decoding for Dense-Constraint QUBOs." arXiv preprint arXiv:2605.20163 (2026).
