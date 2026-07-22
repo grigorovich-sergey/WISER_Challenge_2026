@@ -60,7 +60,7 @@ The *postprocessed* variant **minimized circuit cost**, with depth remaining nea
 <img src="figures/04_repair_burden.png" width="400" height="300"> <img src="figures/12_probability_weighted_stems_removed_postprocessed_minus_relaxed.png" width="400" height="300">
 <img src="figures/05_energy_gap.png" width="400" height="300"> <img src="figures/12_energy_gap_postprocessed_minus_relaxed.png" width="400" height="300">
 
-For more details, check **analysis notebook** (link).
+For more details, check <a href="/rna_qubo_results_analysis.ipynb">**analysis notebook**</a> and individual <a href="/figures">**figures**</a>
 
 #### Key summary
 
@@ -82,19 +82,19 @@ Overall, these results demonstrate that the *relaxed* variant provided **the bes
 - All measured bitstrings are decoded, invalid stems are repaired, and the results are evaluated on validity, repair burden, MFE energy gap, QUBO complexity, circuit resources and runtime.
 - Execution results are saved as tables and processed separately in the analysis notebook.
 
-For more details, check **execution notebook** (link).
+For more details, check <a href="/rna_qubo_execution.ipynb">**execution notebook**</a>.
 
 #### Modules
 
 Modules provide functions for execution and analysis notebooks:
 
-`data.py`: loading BEACON data, generation of fixed-length synthetic sequences, ViennaRNA reference structures and energies, preparation of the processed sequence table
+<a href="/src/data.py">`data.py`</a> : loading BEACON data, generation of fixed-length synthetic sequences, ViennaRNA reference structures and energies, preparation of the processed sequence table
 
-`model.py` enumeration of candidate stems, overlap and crossing conflicts, construction of the *strict*, *relaxed*, and *postprocessed* QUBO versions
+<a href="/src/model.py">`model.py`</a>: enumeration of candidate stems, overlap and crossing conflicts, construction of the *strict*, *relaxed*, and *postprocessed* QUBO versions
 
-`quantum.py` solver, Aer QAOA optimization and sampling, IBM backend preparation and sampling
+<a href="/src/quantum.py">`quantum.py`</a>: solver, Aer QAOA optimization and sampling, IBM backend preparation and sampling
 
-`analysis.py` decoding solver outputs, structural repair, evaluation of repaired structures, aggregation of results, plotting and summary utilities
+<a href="/src/analysis.py">`analysis.py`</a>: decoding solver outputs, structural repair, evaluation of repaired structures, aggregation of results, plotting and summary utilities
 
 ### 5. Limitations
 
