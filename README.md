@@ -113,16 +113,16 @@ Based on the metrics trend with increasing RNA length, it is likely but uncertai
 
 #### QUBO objective
 
-For each candidate stem \(i\), let:
+For each candidate stem $i$:
 
-- \(x_i \in \{0,1\}\) indicate whether stem \(i\) is selected;
-- \(l_i\) denote the length of stem \(i\);
-- \(O\) denote the set of nucleotide-overlap conflicts;
-- \(C\) denote the set of crossing-stem conflicts.
+- $x_i \in \{0,1\}$ indicates whether stem $i$ is selected;
+- $l_i$ is the number of base pairs in stem $i$;
+- $O$ is the set of nucleotide-overlap conflicts;
+- $C$ is the set of crossing-stem conflicts.
 
 The **strict** QUBO objective is:
 
-$$
+```math
 Q_{\mathrm{strict}}(x)
 =
 -\sum_i l_i x_i
@@ -131,41 +131,41 @@ P_{\mathrm{overlap}}
 \sum_{(i,j)\in O} x_i x_j
 +
 P_{\mathrm{crossing}}
-\sum_{(i,j)\in C} x_i x_j.
-$$
+\sum_{(i,j)\in C} x_i x_j
+```
 
 The **relaxed** variant excludes crossing conflicts from the quantum objective:
 
-$$
+```math
 Q_{\mathrm{relaxed}}(x)
 =
 -\sum_i l_i x_i
 +
 P_{\mathrm{overlap}}
-\sum_{(i,j)\in O} x_i x_j.
-$$
+\sum_{(i,j)\in O} x_i x_j
+```
 
 The **postprocessed** variant contains only the stem-selection rewards:
 
-$$
+```math
 Q_{\mathrm{postprocessed}}(x)
 =
--\sum_i l_i x_i.
-$$
+-\sum_i l_i x_i
+```
 
-The implementation uses:
+The implementation uses the following penalties:
 
-$$
+```math
 P_{\mathrm{overlap}}
 =
 P_{\mathrm{crossing}}
 =
-1+\max_i l_i.
-$$
+1+\max_i l_i
+```
 
-Because the penalty is larger than the reward of any individual stem, removing one stem from an encoded conflicting pair always reduces the objective. Therefore, an exact optimum of the strict QUBO cannot contain an encoded overlap or crossing conflict, while an exact optimum of the relaxed QUBO cannot contain an encoded overlap conflict.
+Because the penalty is larger than the reward of any individual stem, removing one stem from an encoded conflicting pair always lowers the objective. Therefore, an exact optimum of the strict QUBO cannot contain an encoded overlap or crossing conflict, while an exact optimum of the relaxed QUBO cannot contain an encoded overlap conflict.
 
-The penalties enforce structural constraints and should not be interpreted as thermodynamic free-energy parameters.
+These penalties enforce structural constraints and should not be interpreted as thermodynamic free-energy parameters. Penalty sensitivity was not evaluated in the present study.
 
 For more details, check <a href="/rna_qubo_execution.ipynb">**execution notebook**</a>.
 
