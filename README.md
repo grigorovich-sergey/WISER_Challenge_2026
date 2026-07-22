@@ -45,17 +45,17 @@ Hardware runs were executed circuits with up to **143** logical qubits on the **
 ### 3. Results
 
 The experiments show a clear trade-off between quantum constraint encoding and classical repair.
-Compared with *strict* encoding, the *relaxed* variant **reduced the mean number of quadratic interactions by 37%** on average, across various sequence lenghts, and **reduced mean circuit depth by 21.3%**. The paired comparison showed lower *relaxed*-circuit depth at every tested nontrivial sequence length.
+Compared with *strict* encoding, the *relaxed* variant **reduced the mean number of quadratic interactions by 37%** on average, across various sequence lenghts, and **reduced mean circuit depth by 21.3%**. The paired comparison showed lower *relaxed*-circuit depth at every tested nontrivial sequence length. See figures below:
 
 <img src="figures/02a_aer_qubo_interaction_growth.png" width="400" height="300"> <img src="figures/02b_ibm_qubo_interaction_growth.png" width="400" height="300">
 <img src="figures/07_circuit_depth.png" width="400" height="300"> <img src="figures/12_circuit_depth_relaxed_minus_strict.png" width="400" height="300">
 
-This reduction **did not worsen** repaired candidate **quality** substantially. The mean ViennaRNA energy gap was **0.443 kcal/mol** for *relaxed* and **0.475 kcal/mol** for *strict*. Mean base-pair F1 was **0.801 and 0.811**, respectively. *Strict* encoding improved raw validity on shorter instances, but this advantage disappeared as problem size increased, especially, from length 35 onward.
+This reduction **did not worsen** repaired candidate **quality** substantially. The mean ViennaRNA energy gap was **0.443 kcal/mol** for *relaxed* and **0.475 kcal/mol** for *strict*. Mean base-pair F1 was **0.801 and 0.811**, respectively. *Strict* encoding improved raw validity on shorter instances, but this advantage disappeared as problem size increased, especially, from length 35 onward. See figures below:
 
 <img src="figures/12_energy_gap_relaxed_minus_strict.png" width="400" height="300"> <img src="figures/12_pair_f1_relaxed_minus_strict.png" width="400" height="300">
 <img src="figures/03_raw_validity.png" width="400" height="300"> <img src="figures/12_probability_weighted_raw_validity_relaxed_minus_strict.png" width="400" height="300">
 
-The *postprocessed* variant **minimized circuit cost**, with depth remaining near 6, but lead to **much more work for classical repair**. It required **48.91** stem removals on average, compared with **22.50** for *relaxed*, a 117% increase. Mean energy gap vs *relaxed* was also about **3.5 times larger**, **1.546** versus **0.443** kcal/mol, while mean F1 fell from **0.801** to **0.571**.
+The *postprocessed* variant **minimized circuit cost**, with depth remaining near 6, but lead to **much more work for classical repair**. It required **48.91** stem removals on average, compared with **22.50** for *relaxed*, a 117% increase. Mean energy gap vs *relaxed* was also about **3.5 times larger**, **1.546** versus **0.443** kcal/mol, while mean F1 fell from **0.801** to **0.571**. See figures below:
 
 <img src="figures/04_repair_burden.png" width="400" height="300"> <img src="figures/12_probability_weighted_stems_removed_postprocessed_minus_relaxed.png" width="400" height="300">
 <img src="figures/05_energy_gap.png" width="400" height="300"> <img src="figures/12_energy_gap_postprocessed_minus_relaxed.png" width="400" height="300">
@@ -64,7 +64,9 @@ For more details, check <a href="/rna_qubo_results_analysis.ipynb">**analysis no
 
 ### 4. Summary
 
-Overall, these results demonstrate that the *relaxed* variant provided **the best balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** relative to *strict* encoding while **preserving similar repaired quality**.
+In this project, synthetic RNA sequences were tested up to the lenght of 44 nucleotides in three modes, defined by the stage of resolving structural constraints relative to the quantum encoding and computation. Overall, the results of simulations and hardware runs demonstrate that the *relaxed* variant provided **reasonably good balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** compared to the *strict* encoding while **preserving similar repaired quality**. The *postprocessed* mode minimizes quantum computation complexity, but puts all the burden on classical postprocessing.
+
+Based on the metrics trend with increasing RNA length, it is possible but uncertain, whether it can be extrapolated to high qubit count and longer sequences.
 
 
 *placeholder: link to presentation/video*
