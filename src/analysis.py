@@ -29,11 +29,6 @@ def dot_bracket_to_pairs(structure):
                 f"Unsupported character {character!r} at index {index}."
             )
 
-    if stack:
-        raise ValueError(
-            f"Unmatched opening parenthesis at index {stack[-1]}."
-        )
-
     return sorted(pairs)
 
 
@@ -224,9 +219,6 @@ def build_per_run_summary(detailed_df):
         "run_seed",
     ]
 
-    if detailed_df.empty:
-        raise ValueError("detailed_df does not contain any result rows.")
-
     ranked_df = detailed_df.copy()
     ranked_df["_has_candidate"] = ranked_df[
         "candidate_structure"
@@ -316,9 +308,6 @@ def aggregate_length_statistics(per_run_df):
         "backend_mode",
         "backend_name",
     ]
-
-    if per_run_df.empty:
-        raise ValueError("per_run_df does not contain any run rows.")
 
     summary_df = (
         per_run_df.groupby(group_columns, dropna=False, sort=False)

@@ -5,39 +5,13 @@ import pandas as pd
 import RNA
 
 
-def load_beacon_sequences(
-    path,
-    max_sequences: int = None,
-    max_length: int = None,
-):
-    """
-    Load RNA sequences from a BEACON CSV extraction.
-
-    The input CSV must contain a column named "sequence".
-
-    Parameters
-    ----------
-    path : str or path-like
-        Path to the BEACON CSV file.
-    max_sequences : int or None, default=None
-        Maximum number of valid sequences to return.
-    max_length : int or None, default=None
-        Maximum allowed sequence length.
-
-    Returns
-    -------
-    pandas.DataFrame
-        DataFrame with columns:
-        sequence_id, sequence, length, source
-    """
+def load_beacon_sequences(path, max_sequences = None, max_length = None):
+    """Load RNA sequences from a BEACON file """
+    
     raw_df = pd.read_csv(path)
-
-    if "sequence" not in raw_df.columns:
-        raise ValueError('The input CSV must contain a "sequence" column.')
 
     df = raw_df[["sequence"]].copy()
 
-    # Remove missing and empty entries.
     df = df.dropna(subset=["sequence"])
     df["sequence"] = (
         df["sequence"]
@@ -48,19 +22,12 @@ def load_beacon_sequences(
     )
     df = df[df["sequence"] != ""]
 
-    # Drop sequences containing symbols other than A, U, C, and G.
     valid_mask = df["sequence"].str.fullmatch(r"[AUCG]+")
     invalid_count = int((~valid_mask).sum())
-
-    if invalid_count:
-        print(
-            f"Dropped {invalid_count} sequence(s) containing invalid characters."
-        )
 
     df = df[valid_mask].copy()
     df["length"] = df["sequence"].str.len()
 
-    # Filter by length before limiting the number of returned sequences.
     if max_length is not None:
         df = df[df["length"] <= max_length]
 
@@ -88,33 +55,9 @@ def load_beacon_sequences(
     return df[["sequence_id", "sequence", "length", "source"]]
 
 
-def append_synthetic_sequences(
-    df,
-    len_list,
-    n_seq,
-    seed=666,
-):
-    """
-    Generate shorter synthetic RNA sequences from concatenated source
-    sequences and append them to an existing DataFrame.
+def append_synthetic_sequences(df, len_list, n_seq, seed=666):
+    """ Generate synthetic RNA sequences from concatenated source"""
 
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        Source DataFrame containing columns:
-        sequence_id, sequence, length, and source.
-    len_list : iterable of int
-        Target lengths for synthetic sequences.
-    n_seq : int
-        Number of synthetic sequences to generate for each target length.
-    seed : int
-        Seed used for reproducible random sampling.
-
-    Returns
-    -------
-    pandas.DataFrame
-        Copy of the original DataFrame with synthetic rows appended.
-    """
     target_lengths = list(len_list)
 
     source_sequences = (
@@ -174,20 +117,8 @@ def append_synthetic_sequences(
 
 
 def add_vienna_references(df):
-    """
-    Add ViennaRNA minimum-free-energy reference structures and energies.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        DataFrame containing a "sequence" column with RNA sequences.
-
-    Returns
-    -------
-    pandas.DataFrame
-        Copy of the input DataFrame with two additional columns:
-        reference_structure and reference_mfe.
-    """
+    """ Add ViennaRNA minimum-free-energy reference structures and energies """
+    
     result = df.copy()
 
     structures = []
@@ -205,20 +136,8 @@ def add_vienna_references(df):
 
 
 def save_processed_sequences(df, path):
-    """
-    Save standardized RNA sequence data to a CSV file.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        Processed sequence DataFrame.
-    path : str or path-like
-        Destination CSV path.
-
-    Returns
-    -------
-    None
-    """
+    """ Save RNA sequences + data to a CSV file """
+    
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
