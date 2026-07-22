@@ -1,0 +1,12 @@
+numpy==2.0.2
+pandas==2.2.2
+matplotlib==3.10.0
+
+ViennaRNA==2.7.2
+
+qiskit==2.5.0
+qiskit-optimization==0.7.0
+qiskit-aer==0.17.2
+qiskit-ibm-runtime==0.48.0
+
+ipython==7.34.0
