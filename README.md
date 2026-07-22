@@ -47,9 +47,9 @@ The binary search space is defined by the enumerated candidate stems. Candidate 
 
 The representation may not contain every base pair used by the ViennaRNA MFE structure. It does not directly represent isolated single base pairs, pseudoknots, or structural elements that cannot be assembled from the enumerated consecutive stems. As a result, the ViennaRNA reference may be unreachable even with an exact optimizer.
 
-A *representation oracle* is the best valid structure that can be constructed from the complete candidate-stem set. Its difference from the ViennaRNA reference measures **error introduced by the representation itself**.
+A **representation oracle** is the best valid structure that can be constructed from the complete candidate-stem set. Its difference from the ViennaRNA reference measures **error introduced by the representation itself**.
 
-A sampled oracle is the best repaired structure among the bitstrings actually observed in one solver run. Its difference from the representation oracle also includes sampling and optimization limitations.
+In the present study, we evaluate a **sampled oracle**,  the best repaired structure among the bitstrings actually observed in one solver run. Its difference from the representation oracle also **includes sampling and optimization limitations**.
 
 
 ### 3. Results
@@ -178,6 +178,8 @@ The notebooks were hosted in a Google Colab runtime version 1.0.0, with Python 3
 
 For installation:
 `python -m pip install -r requirements.txt`
+
+`data/results/detailed_results.csv exceeds GitHub filesize limit, so it is archived in detailed_results.zip. Extract before local execution`
 
 The `/src` modules provide functions for execution and analysis notebooks:
 
