@@ -31,9 +31,12 @@ This project is not expected to purpose a better or universal replacement for cl
 
 The project relies on synthetic segments of RNA sequences, produced by concatenating real sequences from the BEACON dataset (*Ren, Yuchen, et al., 2024*) noncoding-RNA task and dividing them into target lengths. This approach preserves some balance between biological reality and the need for short, fixed-lenght sequences for testing and scaling comparisons.
 
-*placeholder: lenghts and numbers for simulated and hardware runs*
+Сompleted 1,170 successful variant–sequence runs: **630 Aer simulator** runs and **540 IBM hardware** runs.
+- The simulator experiment covered 30 sequences at each of 7 lengths `10, 12, 14, 16, 18, 19, 20` nucleotides, with all three variants.
+- The hardware experiment covered 15 sequences at each of 12 lengths `10, 15, 20, 25, 30, 35, 37, 40, 41, 42, 43, 44` nucleotides, with all three variants. 
 
-*placeholder: simulator and hardware runs: hardware specifications, real time used, counts, QPU time*
+Simulation and optimization were performed on Google Colab virtual machine (Intel Xeon CPU ~2.20 GHz). Simulation runs took **~14 minutes real-time** execution.
+Hardware runs were executed circuits with up to 143 logical qubits on the 156-qubit `ibm_quebec` backend. Recorded **QPU usage** reached **~28 minutes**. However, with transpilation, data transfer, results retrieval, with no other pendig jobs and queues, total execution time reached **~2.2 hours real-time**.
 
 *placeholder: graphs for qubit per lenght, variables per lenght, compute time per lenght*
 
