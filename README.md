@@ -39,7 +39,7 @@ Simulation and optimization were performed on Google Colab virtual machine (Inte
 
 Hardware runs were executed circuits with up to **143** logical qubits on the **156-qubit** `ibm_quebec` backend. Recorded **QPU usage** reached **~28 minutes**. However, with transpilation, data transfer, results retrieval, with no other pendig jobs and queues, total execution time reached **~2.2 hours real-time**.
 
-<img src="figures/01_candidate_stem_growth.png" width="315" height="235"> <img src="figures/08_num_qubits.png" width="315" height="235">
+<img src="figures/01_candidate_stem_growth.png" width="380" height="280"> <img src="figures/08_num_qubits.png" width="380" height="280">
 
 
 ### 3. Results
