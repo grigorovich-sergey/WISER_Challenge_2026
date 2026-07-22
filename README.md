@@ -62,14 +62,14 @@ The *postprocessed* variant **minimized circuit cost**, with depth remaining nea
 
 For more details, check <a href="/rna_qubo_results_analysis.ipynb">**analysis notebook**</a> and individual <a href="/figures">**figures**</a>
 
-#### Key summary
+### 4. Summary
 
 Overall, these results demonstrate that the *relaxed* variant provided **the best balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** relative to *strict* encoding while **preserving similar repaired quality**.
 
 
 *placeholder: link to presentation/video*
 
-### 4. Project workflow
+### 5. Project workflow
 
 *placeholder: image of workflow chart*
 
@@ -96,7 +96,7 @@ Modules provide functions for execution and analysis notebooks:
 
 <a href="/src/analysis.py">`analysis.py`</a>: decoding solver outputs, structural repair, evaluation of repaired structures, aggregation of results, plotting and summary utilities
 
-### 5. Limitations
+### 6. Limitations
 
 - Sequences are synthetic segments created from concatenated BEACON sequences
 - MFE reference is based on ViennaRNA, rather than experimental ground truth
@@ -112,7 +112,7 @@ Modules provide functions for execution and analysis notebooks:
 - Biased sequence selection for manageable candidate-stem counts (inflation of reported sequence lenght)
 - Hardware results come from one backend and limited repetitions, no generalization
 
-### 6. References
+### References
 1. Alevras, Dimitris, et al. "mRNA secondary structure prediction using utility-scale quantum computers." 2024 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2024.
 2. Kumar, Vaibhaw, et al. "Towards secondary structure prediction of longer mrna sequences using a quantum-centric optimization scheme." 2025 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2025.
 3. Friedhoff, Triet, et al. "Pauli Correlation Encoding for mRNA Secondary Structure Prediction: Problem-Aware Decoding for Dense-Constraint QUBOs." arXiv preprint arXiv:2605.20163 (2026).
