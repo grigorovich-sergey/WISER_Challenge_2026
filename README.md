@@ -88,7 +88,7 @@ Modules provide functions for execution and analysis notebooks:
 
 `model.py` enumeration of candidate stems, overlap and crossing conflicts, construction of the *strict*, *relaxed*, and *postprocessed* QUBO versions
 
-`quantum.py` the exact solver, Aer QAOA optimization and sampling, IBM backend preparation and sampling
+`quantum.py` solver, Aer QAOA optimization and sampling, IBM backend preparation and sampling
 
 `analysis.py` decoding solver outputs, structural repair, evaluation of repaired structures, aggregation of results, plotting and summary utilities
 
