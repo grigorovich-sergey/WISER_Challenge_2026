@@ -60,7 +60,7 @@ For more details, check **analysis notebook** (link).
 
 #### Key summary
 
-Overall, the *relaxed* variant provided **the best balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** relative to *strict* encoding while **preserving similar repaired quality**.
+Overall, these results demonstrate that the *relaxed* variant provided **the best balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** relative to *strict* encoding while **preserving similar repaired quality**.
 
 
 *placeholder: link to presentation/video*
@@ -69,26 +69,28 @@ Overall, the *relaxed* variant provided **the best balance** among the tested st
 
 *placeholder: image of workflow chart*
 
-The workflow begins by loading BEACON source sequences and generating synthetic ones from segments of fixed lengths.
-ViennaRNA is used to calculate an MFE reference. 
-Candidate stems are sorted, enumerated, conflicts are identified, and strict, relaxed, and postprocessed QUBOs are constructed.
-QAOA parameters are optimized on Aer for the simulation experiment. 
-Run the simulation experiments and collect bitstrings.
-Hardware runs use fixed parameters obtained either through full Aer optimization (for sequences 10-20 length) or transferred from the most similar simulated sequence (20+ nucleotides).
-All measured bitstrings are decoded, invalid stems are repaired, and the results are evaluated on validity, repair burden, MFE energy gap, QUBO complexity, circuit resources and runtime.
-Execution results are saved as tables and processed separately in the analysis notebook.
+- The workflow begins by loading BEACON source sequences and generating synthetic ones from segments of fixed lengths.
+- ViennaRNA is used to calculate an MFE reference. 
+- Candidate stems are sorted, enumerated, conflicts are identified, and strict, relaxed, and postprocessed QUBOs are constructed.
+- QAOA parameters are optimized on Aer for the simulation experiment. 
+- Run the simulation experiments and collect bitstrings.
+- Hardware runs use fixed parameters obtained either through full Aer optimization (for sequences 10-20 length) or transferred from the most similar simulated sequence (20+ nucleotides).
+- All measured bitstrings are decoded, invalid stems are repaired, and the results are evaluated on validity, repair burden, MFE energy gap, QUBO complexity, circuit resources and runtime.
+- Execution results are saved as tables and processed separately in the analysis notebook.
 
 For more details, check **execution notebook** (link).
 
 #### Modules
 
-`data.py` loads the BEACON data, generates fixed-length synthetic sequences, adds ViennaRNA reference structures and energies, and saves the processed sequence table
+Modules provide functions for execution and analysis notebooks:
 
-`model.py` enumerates candidate stems, identifies overlap and crossing conflicts, and constructs the strict, relaxed, and postprocessed QUBO versions
+`data.py`: loading BEACON data, generation of fixed-length synthetic sequences, ViennaRNA reference structures and energies, preparation of the processed sequence table
 
-`quantum.py` contains the exact solver, Aer QAOA optimization and sampling, IBM backend selection, and fixed-parameter hardware sampling
+`model.py` enumeration of candidate stems, overlap and crossing conflicts, construction of the *strict*, *relaxed*, and *postprocessed* QUBO versions
 
-`analysis.py` decodes solver outputs, applies structural repair, evaluates repaired structures, aggregates results, and provides plotting and summary utilities used by the analysis notebook
+`quantum.py` the exact solver, Aer QAOA optimization and sampling, IBM backend preparation and sampling
+
+`analysis.py` decoding solver outputs, structural repair, evaluation of repaired structures, aggregation of results, plotting and summary utilities
 
 ### 5. Limitations
 
