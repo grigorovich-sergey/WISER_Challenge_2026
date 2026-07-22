@@ -9,9 +9,9 @@ Classical tools such as ViennaRNA predict low-energy RNA structures using thermo
 
 #### IBM-Moderna studies of mRNA folding (selected)
 Recent IBM–Moderna research provides a clear progression toward larger and more hybrid quantum workflows.
-- *Alevras et al. (2024)* represented RNA folding as a binary optimization problem and executed a variational algorithm on IBM quantum processors. It is a clear demonstation that larger RNA optimization models could be studied on current hardware rather than only through small simulations.
+- *Alevras et al. (2024)* represented RNA folding as a binary optimization problem and executed a variational algorithm on IBM quantum processors. It is a clear demonstration that larger RNA optimization models could be studied on current hardware rather than only through small simulations.
 
-- *Kumar, Alevras, Metkar et al. (2025)* extended this direction through a broader hybrid workflow. The approach combined quantum execution with classical transformations, and local optimization to address larger RNA sequences.
+- *Kumar, Alevras, Metkar et al. (2025)* extended this direction through a broader hybrid workflow. The approach combined quantum execution with classical transformations and local optimization to address larger RNA sequences.
 
 - *Friedhoff, Metkar, Davis, Kumar, and Galda (2026)* focused on two remaining barriers: the number of qubits required and the difficulty of decoding dense, highly constrained optimization problems. Their compressed encoding and problem-aware decoder moved responsibility into a classical postprocessing stage, showing that the representation of constraints is as important as the algorithm itself.
 
@@ -27,19 +27,19 @@ All three versions use the same RNA sequences, candidate stems, stem rewards, qu
 
 The quantum objective used in this project is a *structural stem-selection proxy*, rather than a thermodynamic Minimum Free Energy (MFE) model. Each candidate stem receives a reward equal to its length. ViennaRNA energy is not included in the QUBO or used during QAOA parameter optimization. It is applied after sampling to evaluate the repaired structures against a classical reference. 
 
-This project is not expected to purpose a better or universal replacement for classical RNA-folding software. It explores **whether stricter quantum constraint encoding provides enough practical benefit to justify its additional circuit cost, or whether a simpler hybrid strategy offers a better balance for current quantum hardware**.
+This project is not expected to propose a better or universal replacement for classical RNA-folding software. It explores **whether stricter quantum constraint encoding provides enough practical benefit to justify its additional circuit cost, or whether a simpler hybrid strategy offers a better balance for current quantum hardware**.
 
 ### 2. Data, simulations and hardware
 
-The project relies on synthetic segments of RNA sequences, produced by concatenating real sequences from the BEACON dataset (*Ren, Yuchen, et al., 2024*) noncoding-RNA task and dividing them into target lengths. This approach preserves some balance between biological reality and the need for short, fixed-lenght sequences for testing and scaling comparisons.
+The project relies on synthetic segments of RNA sequences, produced by concatenating real sequences from the BEACON dataset (*Ren, Yuchen, et al., 2024*) noncoding-RNA task and dividing them into target lengths. This approach preserves some balance between biological reality and the need for short, fixed-length sequences for testing and scaling comparisons.
 
 Сompleted 1,170 successful variant–sequence runs: **630 Aer simulator** runs and **540 IBM hardware** runs:
 - The simulator experiment covered **30 sequences** at each of 7 lengths `10, 12, 14, 16, 18, 19, 20` nucleotides, with all three variants.
 - The hardware experiment covered **15 sequences** at each of 12 lengths `10, 15, 20, 25, 30, 35, 37, 40, 41, 42, 43, 44` nucleotides, with all three variants. 
 
-Simulation and optimization were performed on Google Colab virtual machine (Intel Xeon CPU ~2.20 GHz). Simulation runs took **~14 minutes real-time** execution.
+Simulation and optimization were performed on a Google Colab virtual machine (Intel Xeon CPU ~2.20 GHz). Simulation runs took **~14 minutes real-time** execution.
 
-Hardware runs were executed circuits with up to **143** logical qubits on the **156-qubit** `ibm_quebec` backend. Recorded **QPU usage** reached **~28 minutes**. However, with transpilation, data transfer, results retrieval, with no other pendig jobs and queues, total execution time reached **~2.2 hours real-time**.
+Hardware runs were executed circuits with up to **143** logical qubits on the **156-qubit** `ibm_quebec` backend. Recorded **QPU usage** reached **~28 minutes**. However, with transpilation, data transfer, result retrieval, with no other pending jobs in the queue, total execution time reached **~2.2 hours real-time**.
 
 <img src="figures/01_candidate_stem_growth.png" width="400" height="300"> <img src="figures/08_num_qubits.png" width="400" height="300">
 
@@ -55,12 +55,12 @@ A sampled oracle is the best repaired structure among the bitstrings actually ob
 ### 3. Results
 
 The experiments show a clear trade-off between quantum constraint encoding and classical repair.
-Compared with *strict* encoding, the *relaxed* variant **reduced the mean number of quadratic interactions by 37%** on average, across various sequence lenghts, and **reduced mean circuit depth by 21.3%**. The paired comparison showed lower *relaxed*-circuit depth at every tested nontrivial sequence length. See figures below:
+Compared with *strict* encoding, the *relaxed* variant **reduced the mean number of quadratic interactions by 37%** on average, across various sequence lengths, and **reduced mean circuit depth by 21.3%**. The paired comparison showed lower *relaxed*-circuit depth at every tested nontrivial sequence length. See figures below:
 
 <img src="figures/02a_aer_qubo_interaction_growth.png" width="400" height="300"> <img src="figures/02b_ibm_qubo_interaction_growth.png" width="400" height="300">
 <img src="figures/07_circuit_depth.png" width="400" height="300"> <img src="figures/12_circuit_depth_relaxed_minus_strict.png" width="400" height="300">
 
-This reduction **did not worsen** repaired the **quality** of the best repaired candidate substantially. Using the *sampled-oracle selection described above*, the mean ViennaRNA energy gap was **0.443 kcal/mol** for *relaxed* and **0.475 kcal/mol** for *strict*. Mean base-pair F1 was **0.801 and 0.811**, respectively. See figures below:
+This reduction **did not worsen** repaired the **quality** of the best repaired candidate substantially. Using the *sampled-oracle selection described above*, the mean ViennaRNA energy gap was **0.443 kcal/mol** for *relaxed* and **0.475 kcal/mol** for *strict*. Mean base-pair F1 were **0.801 and 0.811**, respectively. See figures below:
 
 <img src="figures/12_energy_gap_relaxed_minus_strict.png" width="400" height="300"> <img src="figures/12_pair_f1_relaxed_minus_strict.png" width="400" height="300">
 
@@ -68,7 +68,7 @@ This reduction **did not worsen** repaired the **quality** of the best repaired 
 
 <img src="figures/03_raw_validity.png" width="400" height="300"> <img src="figures/12_probability_weighted_raw_validity_relaxed_minus_strict.png" width="400" height="300">
 
-The *postprocessed* variant **minimized circuit cost**, with depth remaining near 6, but lead to **much more work for classical repair**. Because this QUBO contains no conflict penalties, its unconstrained optimum is to select all candidate stems. The quantum objective itself does not distinguish valid from conflicting stem combinations in this variant.
+The *postprocessed* variant **minimized circuit cost**, with depth remaining near 6, but led to **much more work for classical repair**. Because this QUBO contains no conflict penalties, its unconstrained optimum is to select all candidate stems. The quantum objective itself does not distinguish valid from conflicting stem combinations in this variant.
 
 It required **48.91** stem removals on average, compared with **22.50** for *relaxed*, a 117% increase. Mean energy gap vs *relaxed* was also about **3.5 times larger**, **1.546** versus **0.443** kcal/mol, while mean F1 fell from **0.801** to **0.571**. See figures below:
 
@@ -81,17 +81,17 @@ The current results support a comparison of **constraint placement, sampled cand
 
 ### 4. Summary
 
-In this project, synthetic RNA sequences were tested on quantum hardware up to a length of 44 nucleotides, with selection bias toward sequences having manageable candidate-stem counts, in three modes, defined by the stage of resolving structural constraints relative to the quantum encoding and computation. 
+In this project, synthetic RNA sequences were tested on quantum hardware up to a length of 44 nucleotides, in three modes defined by the stage of resolving structural constraints relative to the quantum encoding and computation. Sequence selection was biased toward manageable candidate-stem counts.
 
 The strongest result is the **observed resource and constraint-placement trade-off**.
 
-Overall, the results of simulations and hardware runs demonstrate that the *relaxed* variant provided **reasonably good balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** compared to the *strict* encoding while **preserving similar repaired quality**. The *postprocessed* mode minimizes quantum computation complexity, but puts all the burden on classical postprocessing.
+Overall, the results of simulations and hardware runs demonstrate that the *relaxed* variant provided a **reasonably good balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** compared to the *strict* encoding while **preserving similar repaired quality**. The *postprocessed* mode minimizes quantum computation complexity, but placed all the burden on classical postprocessing.
 
 The *strict* and *relaxed* variants had similar **sampled-oracle quality**, meaning that they produced repaired candidates with similar best ViennaRNA energy gaps and base-pair F1 values. Because the reference energy and structure were used to select these candidates after sampling, this comparison **should not** be interpreted as native top-1 prediction accuracy. 
 
 *Separate* highest-probability, lowest-QUBO-objective analysis is required to determine how much of the final quality comes from the quantum distribution, the candidate representation, and the classical decoder.
 
-Based on the metrics trend with increasing RNA length, it is likely but uncertain, whether it can be extrapolated to high qubit count and longer sequences. Also, sequence length alone is not sufficient to describe optimization difficulty, because the number of candidate stems and quadratic interactions depends on sequence composition.
+Based on the metrics trend with increasing RNA length, it is likely but uncertain whether it can be extrapolated to high qubit counts and longer sequences. Also, sequence length alone is not sufficient to describe optimization difficulty, because the number of candidate stems and quadratic interactions depends on sequence composition.
 
 
 *placeholder: link to presentation/video*
@@ -102,13 +102,13 @@ Based on the metrics trend with increasing RNA length, it is likely but uncertai
 
 - The workflow begins by loading BEACON source sequences and generating synthetic ones from segments of fixed lengths.
 - ViennaRNA is used to calculate an MFE reference. 
-- Candidate stems are sorted, less complex variants are selected, enumerated, conflicts are identified, and strict, relaxed, and postprocessed QUBOs are constructed.
+- Candidate stems are sorted and enumerated, less complex variants are selected, conflicts are identified, and strict, relaxed, and postprocessed QUBOs are constructed.
 - QAOA parameters are optimized on Aer for the simulation experiment. 
 - Run the simulation experiments and collect bitstrings.
-- Hardware runs use fixed parameters obtained either through full Aer optimization (for sequences 10-20 length) or transferred from the simulated sequence of the same variant with max number of variables (for 20+ nucleotides).
+- Hardware runs use fixed parameters obtained through full Aer optimization (for sequences 10-20 nucleotides) or transferred from the simulated sequence of the same variant with the max number of variables (for 20+ nucleotides).
 - All measured bitstrings are decoded, invalid stems are repaired
 - Each repaired structure is evaluated with ViennaRNA. The current energy-gap and F1 figures use a sampled-oracle summary that selects the best observed candidate using reference information.
-- Each repaired structure is evaluated on validity, repair burden, QUBO complexity, circuit resources and runtime.
+- Each repaired structure is evaluated for validity, repair burden, QUBO complexity, circuit resources and runtime.
 - Execution results are saved as tables and processed separately in the analysis notebook.
 
 #### QUBO objective
@@ -171,14 +171,15 @@ For more details, check <a href="rna_qubo_execution.ipynb">**execution notebook*
 
 #### Modules
 
-The notebooks were executed in a hosted Google Colab runtime 1.0.0, with Python 3.12.13 and CPU-only.
+The notebooks were hosted in a Google Colab runtime version 1.0.0, with Python 3.12.13 and CPU-only execution.
+
 <a href="colab-runtime-info.json">**Runtime report**</a>
 <a href="requirements-colab-freeze.txt">**Exact package snapshot**</a>
 
 For installation:
 `python -m pip install -r requirements.txt`
 
-`/src` modules provide functions for execution and analysis notebooks:
+The `/src` modules provide functions for execution and analysis notebooks:
 
 <a href="src/data.py">`data.py`</a> : loading BEACON data, generation of fixed-length synthetic sequences, ViennaRNA reference structures and energies, preparation of the processed sequence table
 
@@ -193,7 +194,7 @@ For installation:
 ### 6. Limitations
 
 - Sequences are synthetic segments created from concatenated BEACON sequences
-- MFE reference is based on ViennaRNA, rather than experimental ground truth
+- The MFE reference is based on ViennaRNA, rather than experimental ground truth
 - Basic hardware-aware optimization
 - No advanced encoding/transpilation
 - No quantum error correction techniques
@@ -209,11 +210,12 @@ For installation:
 
 ### References
 1. Alevras, Dimitris, et al. "mRNA secondary structure prediction using utility-scale quantum computers." 2024 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2024.
-2. Kumar, Vaibhaw, et al. "Towards secondary structure prediction of longer mrna sequences using a quantum-centric optimization scheme." 2025 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2025.
+2. Kumar, Vaibhaw, et al. "Towards secondary structure prediction of longer mRNA sequences using a quantum-centric optimization scheme." 2025 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2025.
 3. Friedhoff, Triet, et al. "Pauli Correlation Encoding for mRNA Secondary Structure Prediction: Problem-Aware Decoding for Dense-Constraint QUBOs." arXiv preprint arXiv:2605.20163 (2026).
 4. Ren, Yuchen, et al. "Beacon: Benchmark for comprehensive rna tasks and language models." Advances in Neural Information Processing Systems 37 (2024): 92891-92921.
 
 #### Disclosure - Generative AI usage
 
 *Gemini* 2.5 in Google Colab environment - syntax autocompletion, troubleshooting, debugging
+
 *ChatGPT* 5.5 - debugging, technical writing (comments, markdown text cells), editing (grammar, style), pre-release critique
