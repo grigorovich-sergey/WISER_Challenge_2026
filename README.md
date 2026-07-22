@@ -75,7 +75,7 @@ It required **48.91** stem removals on average, compared with **22.50** for *rel
 <img src="figures/04_repair_burden.png" width="400" height="300"> <img src="figures/12_probability_weighted_stems_removed_postprocessed_minus_relaxed.png" width="400" height="300">
 <img src="figures/05_energy_gap.png" width="400" height="300"> <img src="figures/12_energy_gap_postprocessed_minus_relaxed.png" width="400" height="300">
 
-For more details, check <a href="/rna_qubo_results_analysis.ipynb">**analysis notebook**</a> and individual <a href="/figures">**figures**</a>
+For more details, check <a href="rna_qubo_results_analysis.ipynb">**analysis notebook**</a> and individual <a href="figures">**figures**</a>
 
 The current results support a comparison of **constraint placement, sampled candidate availability, repair burden, and circuit resources**.
 
@@ -167,22 +167,28 @@ Because the penalty is larger than the reward of any individual stem, removing o
 
 These penalties enforce structural constraints and should not be interpreted as thermodynamic free-energy parameters. Penalty sensitivity was not evaluated in the present study.
 
-For more details, check <a href="/rna_qubo_execution.ipynb">**execution notebook**</a>.
+For more details, check <a href="rna_qubo_execution.ipynb">**execution notebook**</a>.
 
 #### Modules
+
+The notebooks were executed in a hosted Google Colab runtime 1.0.0, with Python 3.12.13 and CPU-only.
+<a href="colab-runtime-info.json">**Runtime report**</a>
+<a href="requirements-colab-freeze.txt">**Exact package snapshot**</a>
 
 For installation:
 `python -m pip install -r requirements.txt`
 
-Modules provide functions for execution and analysis notebooks:
+`/src` modules provide functions for execution and analysis notebooks:
 
-<a href="/src/data.py">`data.py`</a> : loading BEACON data, generation of fixed-length synthetic sequences, ViennaRNA reference structures and energies, preparation of the processed sequence table
+<a href="src/data.py">`data.py`</a> : loading BEACON data, generation of fixed-length synthetic sequences, ViennaRNA reference structures and energies, preparation of the processed sequence table
 
-<a href="/src/model.py">`model.py`</a>: enumeration of candidate stems, overlap and crossing conflicts, construction of the *strict*, *relaxed*, and *postprocessed* QUBO versions
+<a href="src/model.py">`model.py`</a>: enumeration of candidate stems, overlap and crossing conflicts, construction of the *strict*, *relaxed*, and *postprocessed* QUBO versions
 
-<a href="/src/quantum.py">`quantum.py`</a>: solver, Aer QAOA optimization and sampling, IBM backend preparation and sampling
+<a href="src/quantum.py">`quantum.py`</a>: solver, Aer QAOA optimization and sampling, IBM backend preparation and sampling
 
-<a href="/src/analysis.py">`analysis.py`</a>: decoding solver outputs, structural repair, evaluation of repaired structures, aggregation of results, plotting and summary utilities
+<a href="src/analysis.py">`analysis.py`</a>: decoding solver outputs, structural repair, evaluation of repaired structures, aggregation of results, plotting and summary utilities
+
+
 
 ### 6. Limitations
 
@@ -206,3 +212,8 @@ Modules provide functions for execution and analysis notebooks:
 2. Kumar, Vaibhaw, et al. "Towards secondary structure prediction of longer mrna sequences using a quantum-centric optimization scheme." 2025 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2025.
 3. Friedhoff, Triet, et al. "Pauli Correlation Encoding for mRNA Secondary Structure Prediction: Problem-Aware Decoding for Dense-Constraint QUBOs." arXiv preprint arXiv:2605.20163 (2026).
 4. Ren, Yuchen, et al. "Beacon: Benchmark for comprehensive rna tasks and language models." Advances in Neural Information Processing Systems 37 (2024): 92891-92921.
+
+#### Disclosure - Generative AI usage
+
+*Gemini* 2.5 in Google Colab environment - syntax autocompletion, troubleshooting, debugging
+*ChatGPT* 5.5 - debugging, technical writing (comments, markdown text cells), editing (grammar, style), pre-release critique
