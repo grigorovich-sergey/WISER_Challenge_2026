@@ -64,9 +64,11 @@ For more details, check <a href="/rna_qubo_results_analysis.ipynb">**analysis no
 
 ### 4. Summary
 
-In this project, synthetic RNA sequences were tested up to the lenght of 44 nucleotides in three modes, defined by the stage of resolving structural constraints relative to the quantum encoding and computation. Overall, the results of simulations and hardware runs demonstrate that the *relaxed* variant provided **reasonably good balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** compared to the *strict* encoding while **preserving similar repaired quality**. The *postprocessed* mode minimizes quantum computation complexity, but puts all the burden on classical postprocessing.
+In this project, synthetic RNA sequences were hardware tested up to the lenght of 44 nucleotides in three modes, defined by the stage of resolving structural constraints relative to the quantum encoding and computation. 
 
-Based on the metrics trend with increasing RNA length, it is possible but uncertain, whether it can be extrapolated to high qubit count and longer sequences.
+Overall, the results of simulations and hardware runs demonstrate that the *relaxed* variant provided **reasonably good balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** compared to the *strict* encoding while **preserving similar repaired quality**. The *postprocessed* mode minimizes quantum computation complexity, but puts all the burden on classical postprocessing.
+
+Based on the metrics trend with increasing RNA length, it is likely but uncertain, whether it can be extrapolated to high qubit count and longer sequences.
 
 
 *placeholder: link to presentation/video*
