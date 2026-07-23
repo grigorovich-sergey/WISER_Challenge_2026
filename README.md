@@ -7,6 +7,8 @@ mRNA can fold on itself when complementary nucleotides form base pairs, with the
 
 Classical tools such as ViennaRNA predict low-energy RNA structures using thermodynamic models. In this project, ViennaRNA provides a reference structure and energy for quantum model comparison. The goal is not to replace this approach, but to study how RNA folding can be represented in a quantum optimization problem.
 
+In this project, RNA stem selection is formulated as a **quadratic unconstrained binary optimization (QUBO)** problem, where binary variables represent candidate stems and quadratic terms reward compatible or penalize conflicting variants. The objective is explored using the **Quantum Approximate Optimization Algorithm (QAOA)**, a variational method that leverages inherent quantum parallelism and interference effects to explore the solution space more efficiently.
+
 #### IBM-Moderna studies of mRNA folding (selected)
 Recent IBM–Moderna research provides a clear progression toward larger and more hybrid quantum workflows.
 - *Alevras et al. (2024)* represented RNA folding as a binary optimization problem and executed a variational algorithm on IBM quantum processors. It is a clear demonstration that larger RNA optimization models could be studied on current hardware rather than only through small simulations.
