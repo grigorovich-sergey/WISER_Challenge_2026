@@ -29,6 +29,11 @@ def dot_bracket_to_pairs(structure):
                 f"Unsupported character {character!r} at index {index}."
             )
 
+    if stack:
+        raise ValueError(
+            f"Unmatched opening parenthesis at index {stack[-1]}."
+        )
+
     return sorted(pairs)
 
 
@@ -219,6 +224,9 @@ def build_per_run_summary(detailed_df):
         "run_seed",
     ]
 
+    if detailed_df.empty:
+        raise ValueError("detailed_df does not contain any result rows.")
+
     ranked_df = detailed_df.copy()
     ranked_df["_has_candidate"] = ranked_df[
         "candidate_structure"
@@ -300,6 +308,566 @@ def build_per_run_summary(detailed_df):
     )
 
 
+def build_candidate_selection_summary(detailed_df):
+    """Select three candidate interpretations for every solver run.
+
+    The returned long-format dataframe contains one row per run for each
+    selection method:
+
+    - objective_first: lowest observed QUBO-objective sample rank;
+    - repaired_map: repaired structure with the largest aggregated probability;
+    - sampled_oracle: best reference-assisted candidate under the existing
+      energy-gap and base-pair-F1 ranking.
+
+    Only sampled_oracle uses ViennaRNA-derived quality metrics during
+    selection.
+    """
+    group_columns = [
+        "sequence_id",
+        "length",
+        "variant",
+        "backend_mode",
+        "backend_name",
+        "run_id",
+        "run_seed",
+    ]
+
+    if detailed_df.empty:
+        raise ValueError(
+            "detailed_df must contain at least one row."
+        )
+
+    ranked_df = detailed_df.copy()
+    ranked_df["_row_order"] = range(len(ranked_df))
+    ranked_df["_sample_rank_numeric"] = pd.to_numeric(
+        ranked_df["sample_rank"],
+        errors="coerce",
+    )
+    ranked_df["_probability_numeric"] = pd.to_numeric(
+        ranked_df["sample_probability"],
+        errors="coerce",
+    ).fillna(0.0)
+    ranked_df["_has_candidate"] = ranked_df[
+        "candidate_structure"
+    ].notna()
+
+    if ranked_df["_sample_rank_numeric"].isna().any():
+        raise ValueError(
+            "sample_rank must be numeric and non-missing."
+        )
+    if (ranked_df["_probability_numeric"] < 0.0).any():
+        raise ValueError(
+            "sample_probability must be non-negative."
+        )
+
+    run_groups = ranked_df.groupby(
+        group_columns,
+        dropna=False,
+        sort=False,
+    )
+    ranked_df["observed_probability_mass"] = run_groups[
+        "_probability_numeric"
+    ].transform("sum")
+    ranked_df["retained_sample_count"] = run_groups[
+        "_row_order"
+    ].transform("size")
+    ranked_df["selected_bitstring_probability"] = ranked_df[
+        "_probability_numeric"
+    ]
+
+    structure_group_columns = [
+        *group_columns,
+        "candidate_structure",
+    ]
+    structure_stats_df = (
+        ranked_df[ranked_df["_has_candidate"]]
+        .groupby(
+            structure_group_columns,
+            dropna=False,
+            sort=False,
+        )
+        .agg(
+            selected_structure_probability=(
+                "_probability_numeric",
+                "sum",
+            ),
+            structure_bitstring_count=(
+                "_row_order",
+                "size",
+            ),
+        )
+        .reset_index()
+    )
+
+    ranked_df = ranked_df.merge(
+        structure_stats_df,
+        on=structure_group_columns,
+        how="left",
+        validate="many_to_one",
+        sort=False,
+    )
+    ranked_df["selected_structure_probability"] = ranked_df[
+        "selected_structure_probability"
+    ].fillna(0.0)
+    ranked_df["structure_bitstring_count"] = ranked_df[
+        "structure_bitstring_count"
+    ].fillna(0).astype(int)
+
+    # Reference-independent result from the best observed QUBO objective.
+    objective_first_df = (
+        ranked_df.sort_values(
+            by=[
+                *group_columns,
+                "_sample_rank_numeric",
+                "_row_order",
+            ],
+            ascending=[
+                *([True] * len(group_columns)),
+                True,
+                True,
+            ],
+            na_position="last",
+            kind="stable",
+        )
+        .groupby(
+            group_columns,
+            dropna=False,
+            sort=False,
+        )
+        .head(1)
+        .copy()
+    )
+    objective_first_df[
+        "selection_method"
+    ] = "objective_first"
+    objective_first_df["reference_assisted"] = False
+
+    # Reference-independent MAP estimate after deterministic repair.
+    map_candidates_df = ranked_df[
+        ranked_df["_has_candidate"]
+    ].copy()
+    map_candidates_df["_structure_sort"] = map_candidates_df[
+        "candidate_structure"
+    ].astype(str)
+
+    repaired_map_df = (
+        map_candidates_df.sort_values(
+            by=[
+                *group_columns,
+                "selected_structure_probability",
+                "_sample_rank_numeric",
+                "_structure_sort",
+                "_row_order",
+            ],
+            ascending=[
+                *([True] * len(group_columns)),
+                False,
+                True,
+                True,
+                True,
+            ],
+            na_position="last",
+            kind="stable",
+        )
+        .groupby(
+            group_columns,
+            dropna=False,
+            sort=False,
+        )
+        .head(1)
+        .copy()
+    )
+
+    # Preserve three rows per run even if a run contains no valid
+    # repaired candidate.
+    all_run_index = pd.MultiIndex.from_frame(
+        objective_first_df[group_columns]
+    )
+    map_run_index = pd.MultiIndex.from_frame(
+        repaired_map_df[group_columns]
+    )
+    missing_map_mask = ~all_run_index.isin(map_run_index)
+
+    if missing_map_mask.any():
+        repaired_map_df = pd.concat(
+            [
+                repaired_map_df,
+                objective_first_df.loc[
+                    missing_map_mask
+                ].copy(),
+            ],
+            ignore_index=True,
+            sort=False,
+        )
+
+    repaired_map_df["selection_method"] = "repaired_map"
+    repaired_map_df["reference_assisted"] = False
+
+    # Reproduce the current reference-assisted candidate ranking.
+    sampled_oracle_df = (
+        ranked_df.sort_values(
+            by=[
+                *group_columns,
+                "_has_candidate",
+                "energy_gap",
+                "pair_f1",
+                "sample_probability",
+                "sample_rank",
+            ],
+            ascending=[
+                *([True] * len(group_columns)),
+                False,
+                True,
+                False,
+                False,
+                True,
+            ],
+            na_position="last",
+            kind="stable",
+        )
+        .groupby(
+            group_columns,
+            dropna=False,
+            sort=False,
+        )
+        .head(1)
+        .copy()
+    )
+    sampled_oracle_df[
+        "selection_method"
+    ] = "sampled_oracle"
+    sampled_oracle_df["reference_assisted"] = True
+
+    summary_df = pd.concat(
+        [
+            objective_first_df,
+            repaired_map_df,
+            sampled_oracle_df,
+        ],
+        ignore_index=True,
+        sort=False,
+    )
+    summary_df["selection_available"] = summary_df[
+        "candidate_structure"
+    ].notna()
+    summary_df["_selection_order"] = summary_df[
+        "selection_method"
+    ].map(
+        {
+            "objective_first": 0,
+            "repaired_map": 1,
+            "sampled_oracle": 2,
+        }
+    )
+    summary_df = summary_df.sort_values(
+        [
+            *group_columns,
+            "_selection_order",
+        ],
+        kind="stable",
+    ).reset_index(drop=True)
+
+    internal_columns = [
+        "_row_order",
+        "_sample_rank_numeric",
+        "_probability_numeric",
+        "_has_candidate",
+        "_structure_sort",
+        "_selection_order",
+    ]
+    summary_df = summary_df.drop(
+        columns=[
+            column
+            for column in internal_columns
+            if column in summary_df.columns
+        ]
+    )
+
+    selection_columns = [
+        "selection_method",
+        "reference_assisted",
+        "selection_available",
+        "selected_bitstring_probability",
+        "selected_structure_probability",
+        "structure_bitstring_count",
+        "observed_probability_mass",
+        "retained_sample_count",
+    ]
+    remaining_columns = [
+        column
+        for column in detailed_df.columns
+        if column not in group_columns
+    ]
+
+    return summary_df[
+        [
+            *group_columns,
+            *selection_columns,
+            *remaining_columns,
+        ]
+    ]
+
+def build_selection_gap_summary(selection_summary_df):
+    """Compare reference-independent selections with the sampled oracle.
+
+    Returns one row per run for each reference-independent method:
+    ``objective_first`` and ``repaired_map``.
+
+    The comparison reports the loss relative to the reference-assisted
+    sampled oracle:
+
+    - energy_gap_penalty = selected gap - oracle gap
+    - pair_f1_loss = oracle F1 - selected F1
+    """
+    group_columns = [
+        "sequence_id",
+        "length",
+        "variant",
+        "backend_mode",
+        "backend_name",
+        "run_id",
+        "run_seed",
+    ]
+    required_columns = {
+        *group_columns,
+        "selection_method",
+        "candidate_structure",
+        "energy_gap",
+        "pair_f1",
+    }
+    missing_columns = sorted(
+        required_columns - set(selection_summary_df.columns)
+    )
+    if missing_columns:
+        raise ValueError(
+            "selection_summary_df is missing columns: "
+            + ", ".join(missing_columns)
+        )
+    if selection_summary_df.empty:
+        raise ValueError(
+            "selection_summary_df must contain at least one row."
+        )
+
+    required_methods = {
+        "objective_first",
+        "repaired_map",
+        "sampled_oracle",
+    }
+    observed_methods = set(
+        selection_summary_df["selection_method"].dropna()
+    )
+    missing_methods = sorted(required_methods - observed_methods)
+    if missing_methods:
+        raise ValueError(
+            "selection_summary_df is missing selection methods: "
+            + ", ".join(missing_methods)
+        )
+
+    relevant_df = selection_summary_df[
+        selection_summary_df["selection_method"].isin(
+            required_methods
+        )
+    ].copy()
+
+    duplicate_mask = relevant_df.duplicated(
+        subset=[
+            *group_columns,
+            "selection_method",
+        ],
+        keep=False,
+    )
+    if duplicate_mask.any():
+        raise ValueError(
+            "selection_summary_df contains duplicate rows for "
+            "the same run and selection method."
+        )
+
+    method_counts_df = (
+        relevant_df.groupby(
+            group_columns,
+            dropna=False,
+        )["selection_method"]
+        .nunique()
+    )
+    if not method_counts_df.eq(len(required_methods)).all():
+        raise ValueError(
+            "Every run must contain objective_first, repaired_map, "
+            "and sampled_oracle rows."
+        )
+
+    optional_columns = [
+        column
+        for column in [
+            "selection_available",
+            "sample_rank",
+            "sample_probability",
+            "selected_bitstring_probability",
+            "selected_structure_probability",
+            "structure_bitstring_count",
+            "observed_probability_mass",
+            "retained_sample_count",
+        ]
+        if column in relevant_df.columns
+    ]
+
+    selected_columns = [
+        *group_columns,
+        "selection_method",
+        "candidate_structure",
+        "energy_gap",
+        "pair_f1",
+        *optional_columns,
+    ]
+
+    selected_df = relevant_df[
+        relevant_df["selection_method"].isin(
+            ["objective_first", "repaired_map"]
+        )
+    ][selected_columns].copy()
+
+    selected_rename_map = {
+        "candidate_structure": "selected_candidate_structure",
+        "energy_gap": "selected_energy_gap",
+        "pair_f1": "selected_pair_f1",
+    }
+    selected_rename_map.update(
+        {
+            column: f"selected_{column}"
+            for column in optional_columns
+        }
+    )
+    selected_df = selected_df.rename(
+        columns=selected_rename_map
+    )
+
+    oracle_df = relevant_df[
+        relevant_df["selection_method"] == "sampled_oracle"
+    ][
+        [
+            *group_columns,
+            "candidate_structure",
+            "energy_gap",
+            "pair_f1",
+        ]
+    ].copy()
+
+    oracle_df = oracle_df.rename(
+        columns={
+            "candidate_structure": "oracle_candidate_structure",
+            "energy_gap": "oracle_energy_gap",
+            "pair_f1": "oracle_pair_f1",
+        }
+    )
+
+    objective_structure_df = relevant_df[
+        relevant_df["selection_method"] == "objective_first"
+    ][
+        [
+            *group_columns,
+            "candidate_structure",
+        ]
+    ].rename(
+        columns={
+            "candidate_structure":
+                "objective_first_candidate_structure"
+        }
+    )
+
+    gap_df = selected_df.merge(
+        oracle_df,
+        on=group_columns,
+        how="left",
+        validate="many_to_one",
+        indicator=True,
+    )
+
+    if not gap_df["_merge"].eq("both").all():
+        raise ValueError(
+            "At least one reference-independent selection has no "
+            "matching sampled-oracle row."
+        )
+    gap_df = gap_df.drop(columns="_merge")
+
+    gap_df = gap_df.merge(
+        objective_structure_df,
+        on=group_columns,
+        how="left",
+        validate="many_to_one",
+    )
+
+    for column in [
+        "selected_energy_gap",
+        "selected_pair_f1",
+        "oracle_energy_gap",
+        "oracle_pair_f1",
+    ]:
+        gap_df[column] = pd.to_numeric(
+            gap_df[column],
+            errors="coerce",
+        )
+
+    gap_df["energy_gap_penalty"] = (
+        gap_df["selected_energy_gap"]
+        - gap_df["oracle_energy_gap"]
+    )
+    gap_df["pair_f1_loss"] = (
+        gap_df["oracle_pair_f1"]
+        - gap_df["selected_pair_f1"]
+    )
+
+    selected_available = gap_df[
+        "selected_candidate_structure"
+    ].notna()
+    oracle_available = gap_df[
+        "oracle_candidate_structure"
+    ].notna()
+    objective_available = gap_df[
+        "objective_first_candidate_structure"
+    ].notna()
+
+    gap_df["same_structure_as_oracle"] = (
+        selected_available
+        & oracle_available
+        & gap_df["selected_candidate_structure"].eq(
+            gap_df["oracle_candidate_structure"]
+        )
+    )
+    gap_df["oracle_recovered"] = gap_df[
+        "same_structure_as_oracle"
+    ]
+
+    gap_df["same_structure_as_objective_first"] = (
+        selected_available
+        & objective_available
+        & gap_df["selected_candidate_structure"].eq(
+            gap_df["objective_first_candidate_structure"]
+        )
+    )
+
+    gap_df["_selection_order"] = gap_df[
+        "selection_method"
+    ].map(
+        {
+            "objective_first": 0,
+            "repaired_map": 1,
+        }
+    )
+
+    gap_df = (
+        gap_df.sort_values(
+            [
+                *group_columns,
+                "_selection_order",
+            ],
+            kind="stable",
+        )
+        .drop(columns="_selection_order")
+        .reset_index(drop=True)
+    )
+
+    return gap_df
+
+
 def aggregate_length_statistics(per_run_df):
     """Aggregate run-level results by length, variant, and backend."""
     group_columns = [
@@ -308,6 +876,9 @@ def aggregate_length_statistics(per_run_df):
         "backend_mode",
         "backend_name",
     ]
+
+    if per_run_df.empty:
+        raise ValueError("per_run_df does not contain any run rows.")
 
     summary_df = (
         per_run_df.groupby(group_columns, dropna=False, sort=False)

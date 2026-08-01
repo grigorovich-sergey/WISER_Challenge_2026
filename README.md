@@ -49,9 +49,11 @@ The binary search space is defined by the enumerated candidate stems. Candidate 
 
 The representation may not contain every base pair used by the ViennaRNA MFE structure. It does not directly represent isolated single base pairs, pseudoknots, or structural elements that cannot be assembled from the enumerated consecutive stems. As a result, the ViennaRNA reference may be unreachable even with an exact optimizer.
 
-A **representation oracle** is the best valid structure that can be constructed from the complete candidate-stem set. Its difference from the ViennaRNA reference measures **error introduced by the representation itself**.
+A **representation oracle** is the best valid structure that can be constructed from the complete candidate-stem set. Its difference from the ViennaRNA reference measures **error introduced by the representation itself**. It was not computed in the present study.
 
 In the present study, we evaluate a **sampled oracle**,  the best repaired structure among the bitstrings actually observed in one solver run. Its difference from the representation oracle also **includes sampling and optimization limitations**.
+
+To separate candidate availability from operational prediction, **three selection rules** are evaluated. *Objective-first* selects the bitstring with the lowest observed QUBO objective, without using ViennaRNA information. *Repaired MAP* groups bitstrings that produce the same structure after deterministic repair, sums their observed probabilities, and selects the repaired structure with the largest aggregate probability. The *sampled oracle* selects the best observed repaired structure using ViennaRNA energy gap and base-pair F1, and therefore represents a reference-assisted upper bound.
 
 
 ### 3. Results
@@ -62,9 +64,18 @@ Compared with *strict* encoding, the *relaxed* variant **reduced the mean number
 <img src="figures/02a_aer_qubo_interaction_growth.png" width="400" height="300"> <img src="figures/02b_ibm_qubo_interaction_growth.png" width="400" height="300">
 <img src="figures/07_circuit_depth.png" width="400" height="300"> <img src="figures/12_circuit_depth_relaxed_minus_strict.png" width="400" height="300">
 
-This reduction **did not worsen** repaired the **quality** of the best repaired candidate substantially. Using the *sampled-oracle selection described above*, the mean ViennaRNA energy gap was **0.443 kcal/mol** for *relaxed* and **0.475 kcal/mol** for *strict*. Mean base-pair F1 were **0.801 and 0.811**, respectively. See figures below:
+This reduction **did not worsen** repaired the **quality** of the best repaired candidate substantially. Using the *sampled-oracle selection described above*, the mean ViennaRNA energy gap was **0.443 kcal/mol** for *relaxed* and **0.475 kcal/mol** for *strict*. Mean base-pair F1 were **0.801 and 0.811**, respectively. Therefore, the *relaxed* encoding preserves similar **candidate-set potential** at lower circuit cost. See figures below:
 
 <img src="figures/12_energy_gap_relaxed_minus_strict.png" width="400" height="300"> <img src="figures/12_pair_f1_relaxed_minus_strict.png" width="400" height="300">
+<img src="figures/20_ibm_selection_energy_gap_penalty.png" width="400" height="300"><img src="figures/21_ibm_selection_pair_f1_loss.png" width="400" height="300">
+
+*Reference-independent selection* was substantially weaker than the *sampled-oracle upper bound*. On IBM hardware, *objective-first* selection increased the mean ViennaRNA energy gap by 5.29 kcal/mol for *strict* and 5.72 kcal/mol for *relaxed* encoding. Aggregating probability over repaired structures **reduced** these penalties to 3.51 and 3.72 kcal/mol, respectively. The corresponding mean base-pair F1 losses **decreased** from 0.595 to 0.537 for *strict* and from 0.594 to 0.550 for *relaxed*.
+
+The *postprocessed* formulation **behaved differently**. Repaired MAP **increased** its mean energy-gap penalty from 3.23 to 4.58 kcal/mol and its F1 loss from 0.324 to 0.407. 
+
+Thus, **probability aggregation helped** when structural constraints were **already represented in the QUBO**, but reinforced frequently sampled, biologically **weaker** repaired outcomes when all conflicts were resolved to **classical postprocessing**.
+
+These results separate two questions that were previously combined: whether a high-quality structure appears anywhere in the sampled candidate set, and whether it can be selected without access to the ViennaRNA reference. The sampled-oracle results answer the first question; objective-first and repaired-MAP results answer the second.
 
 **Raw validity** provides a separate view that does not depend on ViennaRNA-based candidate selection. *Strict* encoding improved raw validity on shorter instances because both overlap and crossing conflicts were included in the QUBO. This advantage decreased with problem size. From length 35 onward, the probability-weighted raw validity of both *strict* and *relaxed* hardware samples was close to zero, and the final structures depended strongly on classical repair. See figures below:
 
@@ -77,7 +88,10 @@ It required **48.91** stem removals on average, compared with **22.50** for *rel
 <img src="figures/04_repair_burden.png" width="400" height="300"> <img src="figures/12_probability_weighted_stems_removed_postprocessed_minus_relaxed.png" width="400" height="300">
 <img src="figures/05_energy_gap.png" width="400" height="300"> <img src="figures/12_energy_gap_postprocessed_minus_relaxed.png" width="400" height="300">
 
-For more details, check <a href="rna_qubo_results_analysis.ipynb">**analysis notebook**</a> and individual <a href="figures">**figures**</a>
+For more details, check <a href="rna_qubo_results_analysis.ipynb">**analysis notebook**</a>, individual <a href="figures">**figures**</a>, 
+<a href="data/results/candidate_selection_summary.csv">candidate-selection summary</a>,
+<a href="data/results/selection_gap_summary.csv">run-level selection gaps</a>, and
+<a href="data/results/selection_penalty_summary.csv">aggregated selection penalties</a>
 
 The current results support a comparison of **constraint placement, sampled candidate availability, repair burden, and circuit resources**.
 
@@ -85,22 +99,20 @@ The current results support a comparison of **constraint placement, sampled cand
 
 In this project, synthetic RNA sequences were tested on quantum hardware up to a length of 44 nucleotides, in three modes defined by the stage of resolving structural constraints relative to the quantum encoding and computation. Sequence selection was biased toward manageable candidate-stem counts.
 
-The strongest result is the **observed resource and constraint-placement trade-off**.
+The strongest result is the **observed resource, constraint-placement and candidate-selection trade-off**.
 
-Overall, the results of simulations and hardware runs demonstrate that the *relaxed* variant provided a **reasonably good balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** compared to the *strict* encoding while **preserving similar repaired quality**. The *postprocessed* mode minimizes quantum computation complexity, but placed all the burden on classical postprocessing.
+The results of simulations and hardware runs demonstrate that the *relaxed* variant provided a **reasonably good balance** among the tested strategies. It substantially **reduced QUBO connectivity and circuit depth** compared to the *strict* encoding while **preserving similar repaired quality**. The *postprocessed* mode minimizes quantum computation complexity, but placed all the burden on classical postprocessing.
 
 The *strict* and *relaxed* variants had similar **sampled-oracle quality**, meaning that they produced repaired candidates with similar best ViennaRNA energy gaps and base-pair F1 values. Because the reference energy and structure were used to select these candidates after sampling, this comparison **should not** be interpreted as native top-1 prediction accuracy. 
 
-*Separate* highest-probability, lowest-QUBO-objective analysis is required to determine how much of the final quality comes from the quantum distribution, the candidate representation, and the classical decoder.
+However, sampled-oracle quality should not be interpreted as native prediction accuracy. *Objective-first* and *repaired-MAP* selections without using the ViennaRNA reference produced larger energy gaps and lower base-pair F1 scores. *Repaired MAP* **improved** over *objective-first* for *strict* and *relaxed* encoding, indicating that **useful probability mass was distributed across multiple bitstrings that collapsed to the same repaired structure**. It **did not help** the *postprocessed* variant, where aggregation favored common but biologically weaker structures.
 
-Based on the metrics trend with increasing RNA length, it is likely but uncertain whether it can be extrapolated to high qubit counts and longer sequences. Also, sequence length alone is not sufficient to describe optimization difficulty, because the number of candidate stems and quadratic interactions depends on sequence composition.
+Based on the metrics trend with increasing RNA length, it is likely but uncertain whether it can be extrapolated to high qubit counts and longer sequences. Also, sequence length alone is not sufficient to describe optimization difficulty, because the number of candidate stems and quadratic interactions heavily depends on sequence composition.
 
 
 *placeholder: link to presentation/video*
 
 ### 5. Project workflow
-
-*placeholder: image of workflow chart*
 
 - The workflow begins by loading BEACON source sequences and generating synthetic ones from segments of fixed lengths.
 - ViennaRNA is used to calculate an MFE reference. 
@@ -109,7 +121,12 @@ Based on the metrics trend with increasing RNA length, it is likely but uncertai
 - Run the simulation experiments and collect bitstrings.
 - Hardware runs use fixed parameters obtained through full Aer optimization (for sequences 10-20 nucleotides) or transferred from the simulated sequence of the same variant with the max number of variables (for 20+ nucleotides).
 - All measured bitstrings are decoded, invalid stems are repaired
-- Each repaired structure is evaluated with ViennaRNA. The current energy-gap and F1 figures use a sampled-oracle summary that selects the best observed candidate using reference information.
+- Each repaired structure is evaluated with ViennaRNA after sampling. 
+- Three candidate summaries are then constructed: 
+	- objective-first selection from the lowest observed QUBO objective,
+	- repaired-MAP selection from aggregated repaired-structure probability, and 
+	- a reference-assisted sampled oracle selected using energy gap and F1.
+- The difference is reported as an energy-gap penalty, F1 loss, and sampled-oracle recovery rate.
 - Each repaired structure is evaluated for validity, repair burden, QUBO complexity, circuit resources and runtime.
 - Execution results are saved as tables and processed separately in the analysis notebook.
 
