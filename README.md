@@ -88,10 +88,8 @@ It required **48.91** stem removals on average, compared with **22.50** for *rel
 <img src="figures/04_repair_burden.png" width="400" height="300"> <img src="figures/12_probability_weighted_stems_removed_postprocessed_minus_relaxed.png" width="400" height="300">
 <img src="figures/05_energy_gap.png" width="400" height="300"> <img src="figures/12_energy_gap_postprocessed_minus_relaxed.png" width="400" height="300">
 
-For more details, check <a href="rna_qubo_results_analysis.ipynb">**analysis notebook**</a>, individual <a href="figures">**figures**</a>, 
-<a href="data/results/candidate_selection_summary.csv">candidate-selection summary</a>,
-<a href="data/results/selection_gap_summary.csv">run-level selection gaps</a>, and
-<a href="data/results/selection_penalty_summary.csv">aggregated selection penalties</a>
+For more details, check <a href="rna_qubo_results_analysis.ipynb">**analysis notebook**</a> and individual <a href="figures">**figures**</a>
+
 
 The current results support a comparison of **constraint placement, sampled candidate availability, repair burden, and circuit resources**.
 
