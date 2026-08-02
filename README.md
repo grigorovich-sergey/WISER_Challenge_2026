@@ -18,6 +18,10 @@ Recent IBM–Moderna research provides a clear progression toward larger and mor
 - *Friedhoff, Metkar, Davis, Kumar, and Galda (2026)* focused on two remaining barriers: the number of qubits required and the difficulty of decoding dense, highly constrained optimization problems. Their compressed encoding and problem-aware decoder moved responsibility into a classical postprocessing stage, showing that the representation of constraints is as important as the algorithm itself.
 
 #### The present project 
+Following this chain of IBM–Moderna studies, several quantum-engineering questions remain open, including how RNA structures should be represented, where structural constraints should be enforced, and how these choices scale on real hardware. This project therefore focuses on constraint placement, quantum-resource scaling, and hardware validation rather than implementing a complete thermodynamic folding model inside the QUBO.
+
+To isolate these questions, candidate-stem length is used as a simplified structural proxy: longer stems receive larger rewards, while selected structural conflicts are represented through penalty terms. This objective is substantially cheaper to implement than a full MFE model and leaves enough room to compare alternative constraint formulations, repair burden, circuit requirements, and hardware scaling. ViennaRNA energy and base-pair agreement are applied only after sampling as independent biological benchmarks.
+
 The present project continues the direction of these studies by asking a question about the role of structural constraints. Encoding **every** constraint directly in the quantum objective may produce more valid structures, but it adds multiple interactions and can make circuits **more demanding** by increasing depth. Leaving some constraints outside can simplify the circuit, but then invalid selections must be corrected classically.
 
 The project asks a question about the **trade-off** through three versions of the RNA stem-selection problem:
@@ -53,7 +57,7 @@ A **representation oracle** is the best valid structure that can be constructed 
 
 In the present study, we evaluate a **sampled oracle**,  the best repaired structure among the bitstrings actually observed in one solver run. Its difference from the representation oracle also **includes sampling and optimization limitations**.
 
-To separate candidate availability from operational prediction, **three selection rules** are evaluated. *Objective-first* selects the bitstring with the lowest observed QUBO objective, without using ViennaRNA information. *Repaired MAP* groups bitstrings that produce the same structure after deterministic repair, sums their observed probabilities, and selects the repaired structure with the largest aggregate probability. The *sampled oracle* selects the best observed repaired structure using ViennaRNA energy gap and base-pair F1, and therefore represents a reference-assisted upper bound.
+To separate candidate availability from operational prediction, **three selection rules** are evaluated. *Objective-first* selects the bitstring with the lowest observed QUBO objective, without using ViennaRNA information. *Repaired Maximum A Posteriori (MAP)* groups bitstrings that produce the same structure after deterministic repair, sums their observed probabilities, and selects the repaired structure with the largest aggregate probability. The *sampled oracle* selects the best observed repaired structure using ViennaRNA energy gap and base-pair F1, and therefore represents a reference-assisted upper bound.
 
 
 ### 3. Results
