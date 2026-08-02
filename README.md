@@ -18,11 +18,11 @@ Recent IBM–Moderna research provides a clear progression toward larger and mor
 - *Friedhoff, Metkar, Davis, Kumar, and Galda (2026)* focused on two remaining barriers: the number of qubits required and the difficulty of decoding dense, highly constrained optimization problems. Their compressed encoding and problem-aware decoder moved responsibility into a classical postprocessing stage, showing that the representation of constraints is as important as the algorithm itself.
 
 #### The present project 
-Following this chain of IBM–Moderna studies, several quantum-engineering questions remain open, including how RNA structures should be **represented**, **where** structural constraints should be enforced, and how these choices **scale** on real hardware. This project therefore **focuses on constraint placement, quantum-resource scaling, and hardware validation** rather than implementing a complete thermodynamic folding model inside the QUBO.
+Following this chain of IBM–Moderna studies, several quantum-engineering questions remain open, including how RNA structures should be **represented**, where structural constraints should be **enforced**, and how these choices **scale** on real hardware. This project therefore **focuses on constraint placement, quantum-resource scaling, and hardware validation** rather than implementing a complete thermodynamic folding model inside the QUBO.
 
-To isolate these questions, candidate-stem length is used as **a simplified structural proxy**, rather than a thermodynamic Minimum Free Energy (MFE) model: longer stems receive larger rewards, while selected structural conflicts are represented through penalty terms. This objective is substantially cheaper to implement than a full MFE model and leaves enough room to **compare** alternative *constraint formulations, repair burden, circuit requirements, and hardware scaling*. ViennaRNA energy and base-pair agreement are applied only after sampling as independent biological benchmarks.
+To isolate these questions, candidate-stem length is used as a **simplified structural proxy**, rather than a thermodynamic Minimum Free Energy (MFE) model: longer stems receive larger rewards, while selected structural conflicts are represented through penalty terms. This objective is substantially cheaper to implement than a full MFE model and leaves enough room to **compare** alternative *constraint formulations, repair burden, circuit requirements, and hardware scaling*. ViennaRNA energy and base-pair agreement are applied only after sampling as independent biological benchmarks.
 
-The present project continues the direction of these studies by initially asking a question about the role of structural constraints. Encoding **every** constraint directly in the quantum objective may produce more valid structures, but it adds multiple interactions and can make circuits **more demanding** by increasing depth. Leaving some constraints outside can simplify the circuit, but then invalid selections must be corrected classically.
+The present project continues the direction of previous studies by initially asking a question about the role of structural constraints. Encoding **every** constraint directly in the quantum objective may produce more valid structures, but it adds multiple interactions and can make circuits **more demanding** by increasing depth. Leaving some constraints outside can simplify the circuit, but then invalid selections must be corrected classically.
 
 The project asks a question about the **trade-off** through three versions of the RNA stem-selection problem:
 - the **strict** variant places both nucleotide-overlap and crossing-stem constraints inside the QUBO;
@@ -31,7 +31,9 @@ The project asks a question about the **trade-off** through three versions of th
 
 All three versions use the same RNA sequences, candidate stems, stem rewards, quantum workflow, repair logic, and ViennaRNA evaluation. The main difference is **where** structural conflicts are resolved. This design allows the project to compare QUBO connectivity, quantum circuit requirements, raw structural validity, dependence on classical repair, and the quality of structures present in the sampled candidate set.
 
-This project is not expected to propose a better or universal replacement for classical RNA-folding software. It explores **whether stricter quantum constraint encoding provides enough practical benefit to justify its additional circuit cost, or whether a simpler hybrid strategy offers a better balance for current quantum hardware**. The secondary goal is to **evaluate practical scalability of longer sequences and increasing number of QUBO parameters on quantum hardware**.
+This project is not expected to propose a better or universal replacement for classical RNA-folding software. It explores **whether stricter quantum constraint encoding provides enough practical benefit to justify its additional circuit cost, or whether a simpler hybrid strategy offers a better balance for current quantum hardware**. 
+
+The secondary goal is to **evaluate practical scalability of longer sequences and increasing number of QUBO parameters on quantum hardware**.
 
 ### 2. Data, simulations and hardware
 
@@ -111,6 +113,8 @@ Based on the metrics trend with increasing RNA length, it is likely but uncertai
 
 
 *placeholder: link to presentation/video*
+
+For static version, <a href="presentation/WISER-Moderna-presentation.pdf">**slides**</a>
 
 ### 5. Project workflow
 
