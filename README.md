@@ -1,6 +1,14 @@
 # Moderna Challenge for WISER Summer Program 2026
 author: Sergey Grigorovich
 
+### 0. Demo
+
+For video presentation, follow the following link:
+
+[![Watch the video demo on YouTube](presentation/WISER-Moderna.png)](https://www.youtube.com/watch?v=yZxfC2RZC8c)
+
+For static version, <a href="presentation/WISER-Moderna-presentation.pdf">**slides**</a>
+
 ### 1. Introduction and problem statement
 
 mRNA can fold on itself when complementary nucleotides form base pairs, with the resulting secondary structure influencing stability, translation, and manufacturing. Predicting these structures is relevant to mRNA study and design.
@@ -111,10 +119,6 @@ However, sampled-oracle quality should not be interpreted as native prediction a
 
 Based on the metrics trend with increasing RNA length, it is likely but uncertain whether it can be extrapolated to high qubit counts and longer sequences. Also, sequence length alone is not sufficient to describe optimization difficulty, because the number of candidate stems and quadratic interactions heavily depends on sequence composition.
 
-
-*placeholder: link to presentation/video*
-
-For static version, <a href="presentation/WISER-Moderna-presentation.pdf">**slides**</a>
 
 ### 5. Project workflow
 
