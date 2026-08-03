@@ -3,7 +3,7 @@ author: Sergey Grigorovich
 
 ### 0. Demo
 
-For video presentation, follow the following <a href="https://www.youtube.com/watch?v=yZxfC2RZC8c">**youtube link**</a> or click on preview:
+For video presentation, use the following <a href="https://www.youtube.com/watch?v=yZxfC2RZC8c">**youtube link**</a> or click on preview:
 
 [![Watch the video on YouTube](presentation/WISER-Moderna.png)](https://www.youtube.com/watch?v=yZxfC2RZC8c)
 
