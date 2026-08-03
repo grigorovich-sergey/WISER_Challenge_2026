@@ -238,10 +238,10 @@ The `/src` modules provide functions for execution and analysis notebooks:
 - Hardware results come from one backend and limited repetitions, no generalization
 
 ### References
-1. Alevras, Dimitris, et al. "mRNA secondary structure prediction using utility-scale quantum computers." 2024 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2024.
-2. Kumar, Vaibhaw, et al. "Towards secondary structure prediction of longer mRNA sequences using a quantum-centric optimization scheme." 2025 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2025.
-3. Friedhoff, Triet, et al. "Pauli Correlation Encoding for mRNA Secondary Structure Prediction: Problem-Aware Decoding for Dense-Constraint QUBOs." arXiv preprint arXiv:2605.20163 (2026).
-4. Ren, Yuchen, et al. "Beacon: Benchmark for comprehensive rna tasks and language models." Advances in Neural Information Processing Systems 37 (2024): 92891-92921.
+1. Alevras, Dimitris, et al. "mRNA secondary structure prediction using utility-scale quantum computers." 2024 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2024. <a href="https://doi.org/10.1109/QCE60285.2024.00064">**DOI**</a>
+2. Kumar, Vaibhaw, et al. "Towards secondary structure prediction of longer mRNA sequences using a quantum-centric optimization scheme." 2025 IEEE International Conference on Quantum Computing and Engineering (QCE). Vol. 1. IEEE, 2025. <a href="https://doi.org/10.1109/QCE65121.2025.00254">**DOI**</a>
+3. Friedhoff, Triet, et al. "Pauli Correlation Encoding for mRNA Secondary Structure Prediction: Problem-Aware Decoding for Dense-Constraint QUBOs." arXiv preprint arXiv:2605.20163 (2026). <a href="https://doi.org/10.48550/arXiv.2605.20163">**DOI**</a>
+4. Ren, Yuchen, et al. "Beacon: Benchmark for comprehensive rna tasks and language models." Advances in Neural Information Processing Systems 37 (2024): 92891-92921. <a href="https://doi.org/10.52202/079017-2949">**DOI**</a>
 
 #### Disclosure - Generative AI usage
 
